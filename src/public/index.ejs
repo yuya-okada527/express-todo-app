@@ -58,6 +58,7 @@
       xhr.onreadystatechange = () => {
         if (xhr.readyState === 4 && xhr.status === 200) {
           console.log(xhr.responseText);
+          location.reload();
         }
       }
       xhr.open("POST", "http://localhost:3000/todos");
@@ -65,7 +66,6 @@
       xhr.send(JSON.stringify({
         title: title
       }))
-      location.reload();
     }, false);
     for (const doneCheck of document.getElementsByName("done-check")) {
       doneCheck.addEventListener("change", (event) => {
