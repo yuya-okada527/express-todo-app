@@ -12,7 +12,7 @@ const MONGO_URL = "mongodb://root:example@localhost:27017"
 app.get("/", (req, res) => {
   let todos = []
   MongoClient.connect(MONGO_URL, (err, client) => {
-    const db = client.db("db");
+    const db = client.db("todo_db");
     db.collection("todos").find().toArray((err, docs) => {
       if (!docs) {
         return;
@@ -34,7 +34,7 @@ app.get("/", (req, res) => {
 
 app.post("/todos", (req, res) => {
   MongoClient.connect(MONGO_URL, async (err, client) => {
-    const db = client.db("db");
+    const db = client.db("todo_db");
     const count = await db.collection("todos").find().count();
     const todo = {
       id: count + 1,
@@ -48,15 +48,24 @@ app.post("/todos", (req, res) => {
 })
 
 app.put("/todos", (req, res) => {
-  console.log(req.body.id)
   MongoClient.connect(MONGO_URL, (err, client) => {
-    const db = client.db("db");
-    db.collection("todos").find({id: Number.parseInt(req.body.id)}).toArray((err, result) => console.log(result))
+    const db = client.db("todo_db");
     db.collection("todos").updateOne(
       { id: Number.parseInt(req.body.id)},
       { $set: { done: Number.parseInt(req.body.done) }},
       (err, result) => {
-        console.log(result);
+        res.send("success")
+      }
+    )
+  })
+})
+
+app.delete("/todos", (req, res) => {
+  MongoClient.connect(MONGO_URL, (err, client) => {
+    const db = client.db("todo_db");
+    db.collection("todos").deleteOne(
+      { id: Number.parseInt(req.body.id)},
+      (err, result) => {
         res.send("success")
       }
     )

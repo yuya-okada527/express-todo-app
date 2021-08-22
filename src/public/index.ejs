@@ -7,7 +7,7 @@
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta1/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-giJF6kkoqNQ00vy+HMDP7azOuL0xtbfIcaT9wjKHr8RbDVddVHyTfAAsrekwKmP1" crossorigin="anonymous">
 </head>
 <body>
-  <main class="container mt-3">
+  <main class="container mt-5">
     <h1 class="h1">TODO APP</h1>
     <div class="input-group">
       <input type="text" name="task" id="task" placeholder="Add Task" class="form-control">
@@ -23,6 +23,7 @@
               <th scope="col">#</th>
               <th scope="col">Title</th>
               <th scope="col">Done</th>
+              <th scope="col">Delete</th>
             </tr>
           </thead>
           <tbody>
@@ -40,6 +41,14 @@
                     <%= todo.done == 1 ? "checked" : "" %>
                   >
                 </td>
+                <td>
+                  <button
+                    class="btn btn-danger btn-sm"
+                    id="delete-<%= todo.id %>"
+                    name="delete-button"
+                    data-id="<%= todo.id %>"
+                  >DELETE</button>
+                </td>
               </tr>
             <% } %>
           </tbody>
@@ -48,7 +57,7 @@
     <% } %>
   </main>
   <script>
-    // 追加イベントの
+    // 追加イベント
     document.getElementById("add-button").addEventListener("click", () => {
       const title = document.getElementById("task").value;
       if (!title) {
@@ -67,6 +76,7 @@
         title: title
       }))
     }, false);
+    // チェックイベント
     for (const doneCheck of document.getElementsByName("done-check")) {
       doneCheck.addEventListener("change", (event) => {
         const id = event.currentTarget.dataset.id;
@@ -82,6 +92,23 @@
         xhr.send(JSON.stringify({
           id: id,
           done: done
+        }))
+      }, false)
+    }
+    // デリートイベント
+    for (const deleteButton of document.getElementsByName("delete-button")) {
+      deleteButton.addEventListener("click", (event) => {
+        const xhr = new XMLHttpRequest();
+        xhr.onreadystatechange = () => {
+          if (xhr.readyState === 4 && xhr.status === 200) {
+            console.log(xhr.responseText);
+            location.reload()
+          }
+        }
+        xhr.open("DELETE", "http://localhost:3000/todos");
+        xhr.setRequestHeader("Content-Type", "application/json");
+        xhr.send(JSON.stringify({
+          id: event.currentTarget.dataset.id
         }))
       }, false)
     }
