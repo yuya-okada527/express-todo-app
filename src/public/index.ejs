@@ -11,7 +11,7 @@
     <h1 class="h1">TODO APP</h1>
     <div class="input-group">
       <input type="text" name="task" id="task" placeholder="Add Task" class="form-control">
-      <button class="btn btn-primary">ADD</button>
+      <button id="add-button" class="btn btn-primary">ADD</button>
     </div>
 
     <% if (todos.length > 0) { %>
@@ -39,7 +39,24 @@
     <% } %>
   </main>
   <script>
-
+    document.getElementById("add-button").addEventListener("click", () => {
+      const title = document.getElementById("task").value;
+      if (!title) {
+        return;
+      }
+      const xhr = new XMLHttpRequest();
+      xhr.onreadystatechange = () => {
+        if (xhr.readyState === 4 && xhr.status === 200) {
+          console.log(xhr.responseText);
+        }
+      }
+      xhr.open("POST", "http://localhost:3000/todos");
+      xhr.setRequestHeader("Content-Type", "application/json");
+      xhr.send(JSON.stringify({
+        title: title
+      }))
+      location.reload();
+    }, false);
   </script>
 </body>
 </html>

@@ -18,6 +18,11 @@ app.get("/", (req, res) => {
 })
 
 app.post("/todos", (req, res) => {
-  console.log(req.body);
+  const todo = {
+    id: todos.length + 1,
+    title: req.body.title,
+    done: 0
+  }
+  todos.push(todo)
   res.send("POST")
 })
