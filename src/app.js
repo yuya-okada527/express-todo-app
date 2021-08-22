@@ -24,5 +24,13 @@ app.post("/todos", (req, res) => {
     done: 0
   }
   todos.push(todo)
-  res.send("POST")
+  res.send("success")
+})
+
+app.put("/todos", (req, res) => {
+  for (let todo of todos) {
+    if (todo.id != req.body.id) continue;
+    todo.done = req.body.done
+  }
+  res.send("success")
 })

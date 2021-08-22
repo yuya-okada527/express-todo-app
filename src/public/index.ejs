@@ -30,7 +30,16 @@
               <tr>
                 <th scope="row"><%= todo.id %></th>
                 <td><%= todo.title %></td>
-                <td><input type="checkbox" name="done-check-1" id="done-check-1" class="form-check-input" <%= todo.done == 1 ? "checked" : "" %>></td>
+                <td>
+                  <input
+                    type="checkbox"
+                    name="done-check"
+                    id="done-check-<%= todo.id %>"
+                    class="form-check-input"
+                    data-id="<%= todo.id %>"
+                    <%= todo.done == 1 ? "checked" : "" %>
+                  >
+                </td>
               </tr>
             <% } %>
           </tbody>
@@ -39,6 +48,7 @@
     <% } %>
   </main>
   <script>
+    // 追加イベントの
     document.getElementById("add-button").addEventListener("click", () => {
       const title = document.getElementById("task").value;
       if (!title) {
@@ -57,6 +67,24 @@
       }))
       location.reload();
     }, false);
+    for (const doneCheck of document.getElementsByName("done-check")) {
+      doneCheck.addEventListener("change", (event) => {
+        const id = event.currentTarget.dataset.id;
+        const done = event.currentTarget.checked ? 1 : 0;
+        const xhr = new XMLHttpRequest();
+        xhr.onreadystatechange = () => {
+          if (xhr.readyState === 4 && xhr.status === 200) {
+            console.log(xhr.responseText);
+          }
+        }
+        xhr.open("PUT", "http://localhost:3000/todos");
+        xhr.setRequestHeader("Content-Type", "application/json");
+        xhr.send(JSON.stringify({
+          id: id,
+          done: done
+        }))
+      }, false)
+    }
   </script>
 </body>
 </html>
