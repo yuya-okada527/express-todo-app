@@ -1,13 +1,14 @@
 const express = require("express");
 const mongodb = require("mongodb");
+require("dotenv").config()
 const app = express();
 const MongoClient = mongodb.MongoClient;
 
 app.use(express.json())
 
-app.listen(3000);
+app.listen(process.env.SERVER_PORT || 3000);
 
-const MONGO_URL = "mongodb://root:example@localhost:27017"
+const MONGO_URL = `mongodb://${process.env.MONGODB_USER}:${process.env.MONGODB_PASS}@${process.env.MONGODB_HOST}:${process.env.MONGODB_PORT}`
 
 app.get("/", (req, res) => {
   let todos = []
